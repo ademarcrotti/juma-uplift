@@ -1,0 +1,43 @@
+body {
+  padding-top: 50px;
+}
+
+DIV.t-beaneditor {
+	background: none;
+	border: none;
+}
+
+DIV.t-beaneditor LABEL {
+	width: 120px;
+	float: left;
+	text-align: left;
+	clear: left;
+}
+
+input.t-beaneditor-submit {
+	position: relative;
+	left: 120px;
+}
+
+dl.t-beandisplay {
+	background: none;
+	border: none;
+	margin-bottom: 0px;
+}
+
+dl.t-beandisplay dt {
+	text-align: left;
+	width: 25%;
+}
+
+.hideInput {
+	display: none;
+}
+
+/* Overrided from blockly */
+body .blocklyIconShape {
+	fill: #f00 ;
+	stroke: #fff;
+	stroke-width: 1px;
+}
+

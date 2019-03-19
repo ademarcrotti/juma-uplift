@@ -1,0 +1,85 @@
+<html
+	t:type="layout"
+	title="portal Index"
+    t:sidebarTitle="Framework Version"
+    xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd"
+    xmlns:p="tapestry:parameter"
+    xmlns:j="tapestry-library:jquery">
+
+    <head>
+    	<link href="css/index.css" rel="stylesheet" />
+		<style>
+		.qq-upload-button-hover, a:hover.qq-upload-button {cursor:pointer; color: #fff; background: 10px 10px #809FFF; }
+		</style>
+    </head>
+
+
+	<h1>Mappings</h1>
+
+    <table class="table">
+    	<tr>
+    		<th>Nr.</th>
+    		<th>Title</th>
+    		<th>Creator</th>
+    		<th>Created on</th>
+    		<th style="text-align:center">Actions</th>
+    	</tr>
+    	<t:loop source="mappings" value="mapping">
+    		<tr>
+	    		<td>${mapping.id}</td>
+	    		<td><t:pagelink page="EditMapping" context="mapping.id" >${mapping.title}</t:pagelink></td>
+	    		<td>${mapping.creator}</td>
+	    		<td>${mapping.created}</td>
+	    		<td style="text-align:center"><t:actionlink t:id="delete" t:context="mapping"  t:mixins="jquery/Confirm"><span class="glyphicon glyphicon-remove" aria-hidden="true"  ></span></t:actionlink></td>
+	    	</tr>
+    	</t:loop>
+    </table>
+
+    <h1>Create Mapping</h1>
+		<t:alerts />
+
+	   	<t:beaneditform  object="newMapping" include="title, description" add="R2RML, CSV, RunWith" submitlabel="Create Mapping">
+	   		<p:title>
+		   		<t:label for="title"/>
+		        <t:textfield t:id="title" value="newMapping.title"/>
+	   		</p:title>
+
+	   		<p:description>
+		   		<t:label for="description"/>
+		        <t:textfield t:id="description" value="newMapping.description"/>
+	   		</p:description>
+
+
+	   		<p:R2RML>
+	   			<label >R2RML</label>
+	   			<j:ajaxUpload t:id="uploadR2RML"
+	   				  id="ajax_button" 
+	                  t:allowedExtensions="[ttl]">
+    				<noscript>
+        				<p>JavaScript must be activated!</p>
+    				</noscript>
+				</j:ajaxUpload>
+	   		</p:R2RML>
+
+
+
+	   		<p:CSV >
+	   			<label >CSV</label>
+
+	   			<j:ajaxUpload t:id="uploadCSV"
+	                  t:multiple="true"
+	                  id="ajax_button"
+	                  t:allowedExtensions="[csv]">
+    				<noscript>
+        				<p>JavaScript must be activated!</p>
+    				</noscript>
+				</j:ajaxUpload>
+	   		</p:CSV>
+
+			<p:RunWith>
+				<t:label for="inputFormat"/>:
+		   	 	<t:select t:id="inputFormat" model="availableInputs" value="newMapping.inputFormat"/>			
+		    </p:RunWith>
+	   	</t:beaneditform>
+
+</html>

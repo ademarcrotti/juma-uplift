@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		 <meta charset="utf-8">
+
+		 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+
+	    <!-- Blockly core imports -->
+		<script src="blockly_compressed.js"></script>
+		<script src="blocks_compressed.js"></script>
+		<script src="en.js"></script>
+		<script src="messages.js"></script>
+		<script src="js/javascript_compressed.js"></script>
+		<script src="js/en.js"></script>
+
+		<!-- R2RML Blockly -->
+		<script src="juma.js"></script>
+		<script src="juma_r2rml_generator.js"></script>
+		<script src="juma_sml_generator.js"></script>
+		
+		<style type="text/css">
+ 
+			.hideInput {
+				display: none;
+			}
+
+			.wow {font-style: italic;}
+
+			body .blocklyIconShape {
+				fill: #f00 ;
+			}
+
+			.lead {
+				text-align: right;
+			}
+			
+			.container {
+				position: relative;
+				width: 100%;
+				max-width: 400px;
+			}
+
+			.container img {
+				width: 100%;
+				height: auto;
+			}
+
+			.container .btn {q
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+				-ms-transform: translate(-50%, -50%);
+				background-color: #f1f1f1;
+				color: black;
+				font-size: 16px;
+				padding: 16px 30px;
+				border: none;
+				cursor: pointer;
+				border-radius: 5px;
+				text-align: center;
+			}
+
+			.container .btn:hover {
+				background-color: black;
+				color: white;
+			}
+			
+			
+		</style>
+	</head>
+	<body>
+		<div id="blocklyDiv" style="height: 600px; width: 100%;"></div>
+		<textarea id="code" rows="4" cols="50"></textarea>
+		<textarea id="codeSML" rows="4" cols="50"></textarea>
+		<textarea id="content-logical-table"></textarea>
+		<input id="saveLogicalTable" type="button" value="OK"></button>
+<xml id="toolbox" style="display: none">
+	  <!-- 
+	  <category name="Templates" colour="360">
+		<block type="triplemap">
+			<value name="logicaltable">
+	    		<block type="tablesqlquery"></block>
+	    	</value>
+	    	<statement name="subjectmap">
+		    	<block type="subjectmap">
+    				<field name="TERMMAP">TEMPLATE</field>
+		    	</block>
+		    </statement>
+			<statement name="predicateobjectmap">
+				<block type="predicateobjectmap">
+					<statement name="ppredicateobjectmap">
+						<block type="predicatemap"></block>
+					</statement>
+					<statement name="opredicateobjectmap">
+						<block type="objectmap">
+							<field name="TERMMAP">COLUMN</field>
+						</block>
+					</statement>
+				</block>
+			</statement>	
+		</block>
+		<block type="predicateobjectmap">
+			<statement name="ppredicateobjectmap">
+				<block type="predicatemap"></block>
+			</statement>
+			<statement name="opredicateobjectmap">
+				<block type="objectmap">
+					<field name="TERMMAP">COLUMN</field>
+				</block>
+			</statement>
+		</block>
+	  </category>
+	  <category name="Prefixes" colour="62">
+	    <block type="predefinedprefix"></block>
+	    <block type="prefix"></block>
+	    <block type="base"></block>
+	  </category>
+	  <category name="Triple Map" colour="200">
+	    <block type="triplemap"></block>
+	  </category>
+	  <category name="Logical Table" colour="85">
+	    <block type="tablesqlquery"></block>
+	  </category>
+	  <category name="Subject" colour="122">
+	    <block type="subjectmap">
+			<field name="TERMMAP">TEMPLATE</field>
+	    </block>
+	    <block type="class"></block>
+	    <block type="subjecttermtype"></block>
+	    <block type="subjectgraphtermap"></block>
+	  </category>
+	  <category name="Predicate Object" colour="62">		  
+		<block type="predicateobjectmap"></block>	    
+	  </category>
+	  <category name="Predicate" colour="215">		  
+		<block type="predicatemap"></block>
+	  </category>
+	  <category name="Object" colour="170">
+	    <block type="objectmap">
+	    	<field name="TERMMAP">COLUMN</field>
+	    </block>
+	 	<block type="objecttermtype">
+	  		<field name="TERMTYPE">termtypeliteral</field>
+	  	</block>
+	    <block type="objectdatatype"></block>
+	    <block type="objectlanguage"></block>
+	  </category>
+	  <category name="Graph" colour="320">
+			<block type="predicategraphtermap"></block>
+	  </category>
+	  <category name="Parent" colour="380">
+			<block type="parenttriplesmap"></block>
+	    <block type="joincondition"></block>
+	  </category>
+
+	  -->
+	  	<category name="Mapping" colour="#005580">
+			<block type="mapping">
+				<statement name="mapping">
+					<block type="tablesqlquery"></block>
+				</statement>
+			</block>
+		</category>
+	  	<category name="Vocabularies" colour="62">
+			<block type="prefix"></block>
+			<block type="predefinedprefix"></block>
+		</category>
+		<category name="Subject" colour="#5fb3ce">
+			<block type="subjectdef">
+				<value name="source">
+					<block type="subject">
+						<field name="TERMMAP">TEMPLATE</field>
+					</block>
+				</value>
+			</block>
+			<block type="bnode"></block>
+			<block type="classes"></block>
+		</category>
+		<category name="Predicate/Object" colour="#5FBEE1">
+			<block type="predicate_object">
+				<value name="predicate">
+					<block type="predicate">
+						<field name="TERMMAP">CONSTANT</field>
+					</block>
+				</value>
+				<value name="object">
+					<block type="object">
+						<field name="TERMMAP">COLUMN</field>
+						<field name="TERMTYPE">termtypeliteral</field>
+					</block>
+				</value>
+			</block>
+			<block type="object">
+				<field name="TERMMAP">COLUMN</field>
+				<field name="TERMTYPE">termtypeliteral</field>
+			</block>
+		</category>
+		<category name="Linking" colour="#009999">
+			<block type="predicate_object">
+				<value name="predicate">
+					<block type="predicate">
+						<field name="TERMMAP">CONSTANT</field>
+					</block>
+				</value>
+				<value name="object">
+					<block type="linking_mappings"></block>
+				</value>
+			</block>
+			<block type="linking_mappings"></block>
+		</category>
+		<category name="Functions" colour="#DEB887">
+			<block type="load"></block>
+			<block type="callfunctionwithreturn"></block>
+			<block type="concat"></block>
+			<block type="replace"></block>
+		    <block type="substring"></block>
+		    <block type="sum"></block>
+		    <block type="avg"></block>
+		    <block type="predicate_object">
+				<value name="predicate">
+					<block type="predicate">
+						<field name="TERMMAP">CONSTANT</field>
+					</block>
+				</value>
+				<value name="object">
+					<block type="concat"></block>
+				</value>
+			</block>
+		</category>
+		<category name="Graph" colour="320">
+			<block type="graph"></block>
+		</category>
+	</xml>
+		
+		<xml id="startBlocks" style="display:none">
+  <block deletable="false" type="mapping">
+    <statement name="mapping">
+      <block type="tablesqlquery">
+        <mutation sql="employees"></mutation>
+        <field name="TABLESQLQUERY">table</field>
+      </block>
+    </statement>
+    <statement name="vocabs">
+      <block type="prefix">
+        <field name="PREFIX">peter</field>
+        <field name="URI">http://peter.com/peter/0.1/</field>
+        <next>
+          <block type="prefix">
+            <field name="PREFIX">foaf</field>
+            <field name="URI">http://foaf.com/foaf/0.1/</field>
+          </block>
+        </next>
+      </block>
+    </statement>
+    <statement name="subjects">
+      <block type="subjectdef">
+        <field name="ID">1</field>
+        <value name="source">
+          <block type="subject">
+            <field name="TERMMAP">TEMPLATE</field>
+            <field name="TERMMAPVALUE">http://example.com/employee/{id}</field>
+          </block>
+        </value>
+        <statement name="properties">
+          <block type="classes">
+            <mutation>
+              <arg name="peter:example"></arg>
+              <arg name="foaf:Person"></arg>
+            </mutation>
+            <next>
+              <block type="predicate_object">
+                <value name="predicate">
+                  <block type="predicate">
+                    <field name="TERMMAP">CONSTANT</field>
+                    <field name="TERMMAPVALUE">foaf:name</field>
+                  </block>
+                </value>
+                <value name="object">
+                  <block type="object">
+                    <field name="TERMMAP">COLUMN</field>
+                    <field name="TERMMAPVALUE">first_name</field>
+                    <field name="WITHTERMTYPE">FALSE</field>
+                    <field name="TERMTYPE">termtypeliteral</field>
+                    <field name="TERMTYPEVALUE">insert value</field>
+                  </block>
+                </value>
+              </block>
+            </next>
+          </block>
+        </statement>
+      </block>
+    </statement>
+  </block>
+</xml>
+
+		<script>
+		  var workspace = Blockly.inject('blocklyDiv', {toolbox: document.getElementById('toolbox')});
+
+		  Blockly.Xml.domToWorkspace(document.getElementById('startBlocks'), Blockly.mainWorkspace);
+
+		  function generateCode(event) {
+		  	$('#code').val(R2RML.workspaceToCode(workspace));
+		  	$('#codeSML').val(SML.workspaceToCode(workspace));
+		  }
+		  
+		  workspace.addChangeListener(generateCode);
+		  // workspace.addChangeListener(loadTripleMaps);
+		</script>
+		<br />
+		<br />
+		<br />
+		<br />
+		<center>
+			<div class="container">
+				<button class="btn">Upload Mapping</button>
+			</div>
+		</center>
+	</body>
+</html>

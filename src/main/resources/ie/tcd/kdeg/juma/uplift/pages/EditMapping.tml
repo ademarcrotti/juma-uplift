@@ -1,0 +1,513 @@
+<html
+	t:type="layout"
+	title="portal Index"
+    t:sidebarTitle="Framework Version"
+    xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd"
+    xmlns:p="tapestry:parameter"
+    xmlns:j="tapestry-library:jquery">
+
+	<head>
+		<style>
+
+			legend {
+				background-color: #000;
+				color: #fff;
+				padding: 3px 6px;
+			}
+
+			.output {
+				font: 1rem 'Fira Sans', sans-serif;
+			}
+
+			.control {
+				font-size: .8rem;
+				margin: 1rem 0;
+			}
+
+			input:invalid:not(:focus) {
+				outline: 1px solid #f00;
+			}
+
+			.qq-uploader { position:relative; width: 100%;}
+			.qq-upload-button {
+				display:block; /* or inline-block */
+				width: 105px; padding: 7px 0; text-align:center;
+				background:#84a0f8; border-bottom:1px solid #84a0f8;color:#fff;
+			}
+
+			.qq-upload-drop-area {
+				position:absolute; top:0; left:0; width:50%; height:100%; min-height: 70px; z-index:2;
+				background:#84a0f8; text-align:center;
+			}
+			.qq-upload-drop-area span {
+				display:block; position:absolute; top: 50%; width:50%; margin-top:-8px; font-size:16px;
+			}
+			.qq-upload-drop-area-active {background:#98ff98;}
+			.qq-upload-list {margin:15px 35px; padding:0; list-style:disc;}
+			.qq-upload-list li { margin:0; padding:0; line-height:15px; font-size:12px;}
+			.qq-upload-file, .qq-upload-spinner, .qq-upload-size, .qq-upload-cancel, .qq-upload-failed-text {
+				margin-right: 7px;
+			}
+
+			.qq-upload-file {}
+			.qq-upload-spinner {display:inline-block;  width:15px; height:15px; vertical-align:text-bottom;}
+			.qq-upload-size,.qq-upload-cancel {font-size:11px;}
+
+			.qq-upload-failed-text {display:none;}
+			.qq-upload-fail .qq-upload-failed-text {display:inline;}
+
+			table {
+				border-collapse: collapse;
+				width: 70%;
+			}
+
+			th, td {
+				text-align: left;
+				padding: 8px;
+			}
+
+			tr:nth-child(even){background-color: #f2f2f2}
+
+			.qq-upload-button-hover, a:hover.qq-upload-button {cursor:pointer; color: #fff; background: 10px 10px #809FFF; }
+	        t-sort-icon
+
+		</style>
+
+	</head>
+
+	<h1>Edit Mapping</h1>
+	 <t:alerts />
+
+
+	<!-- Nav tabs -->
+	<ul class="nav nav-tabs" role="tablist">
+		<li role="presentation" class="active"><a href="#tab1" aria-controls="tab1" role="tab" data-toggle="tab">Mapping</a></li>
+		<li role="presentation"><a href="#tab2" aria-controls="tab2" role="tab" data-toggle="tab">Configuration</a></li>
+		<li role="presentation"><a href="#tab3" aria-controls="tab3" role="tab" data-toggle="tab">R2RML-Mapping</a></li>
+		<li role="presentation"><a href="#tab4" aria-controls="tab4" role="tab" data-toggle="tab">SML-Mapping</a></li>
+	</ul>
+
+
+
+	<!-- Tab panes -->
+	<div class="tab-content">
+
+		<!-- TAB 1 -->
+		<div role="tabpanel" class="tab-pane active" id="tab1">
+			<div class="row">
+				<br />
+				<div class="col-md-9">
+					<div class="panel panel-info">
+						<div id="blocklyDiv" style="height: calc(100vh - 290px);"></div>
+			    	</div>
+				</div>
+				<div id="edit-logical-table" class="col-md-3" style="display:none;">
+					<div class="panel panel-info">
+					<div id="panel-info-heading-text" class="panel-heading">Table name or SQL query</div>
+					<div class="panel panel-info">
+						<textarea id="content-logical-table" class="form-control" rows="3"/>
+					</div>
+					<button id="saveLogicalTable" class="btn btn-default">OK</button>
+					</div>
+				</div>
+				<div id="edit-function-body" class="col-md-3" style="display:none;">
+						<div class="panel panel-info">
+							<div id="panel-info-heading-text" class="panel-heading">Function body</div>
+							<div class="panel panel-info">
+								<textarea id="content-function-body" class="form-control" rows="10"/>
+							</div>
+							<button id="saveFunctionBody" class="btn btn-default">OK</button>
+						</div>
+				</div>
+			</div>
+
+			<div class="panel panel-info">
+				<t:zone t:id="editorZone" elementName="div" class="panel-body">
+					<t:form role="form" t:id="savemapping" class="form-horizontal" t:context="mapping.id" zone="editorZone">
+						<t:hidden class="form-control" id="hiddenfield" t:id="xml" validate="required" value="mapping.XML"></t:hidden>
+						<t:hidden class="form-control" id="r2rmlmappinghidden" t:id="r2rmlMapping" value="mapping.r2rmlMapping"></t:hidden>
+						<p class = "tpbutton btn-toolbar text-center">
+
+							<t:submit t:id="save" class="btn btn-default" value="Save"/>
+
+							<t:submit t:id="download" class="btn btn-default" value="Run Mapping">
+								<t:trigger event="downloadTrigger"/>
+							</t:submit>
+
+							<t:submit t:id="preview" class="btn btn-default" value="Preview Mapping">
+								<t:trigger event="showModal"/>
+							</t:submit>
+
+							<button id="showModal" style="display:none" type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal"></button>
+
+							<div style="display:none">
+								<t:actionlink id="downloadlink" t:id="downloadlink"/>
+							</div>
+						</p>
+
+						<div class="modal fade" id="myModal" role="dialog">
+			    		  <div class="modal-dialog">
+						  <!-- Modal content-->
+					      <div class="modal-content">
+					        <div class="modal-header">
+					          <button type="button" class="close" data-dismiss="modal">&times;</button>
+					          <h4 class="modal-title">Output</h4>
+					        </div>
+					        <div class="modal-body">
+					          <pre>
+				    			<t:outputraw value="mapping.output" />
+					          </pre>
+					        </div>
+					        <div class="modal-footer">
+					          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					        </div>
+					      </div>
+				      	</div>
+				      </div>
+					</t:form>
+				</t:zone>
+			</div>
+
+		</div>
+
+		<div role="tabpanel" class="tab-pane" id="tab2">
+		<br />
+		<br />
+		<div class="panel panel-info">
+			<div class="panel-heading">Edit information</div>
+			<t:zone t:id="informationZone" elementName="div" class="panel-body">
+				<t:form role="form" t:id="editinformation" class="form-horizontal" t:context="mapping.id" zone="informationZone">
+					<div class="form-group">
+						<label for="title" class="col-md-2 control-label">Title</label>
+						<div class="col-md-10">
+							<t:textfield class="form-control" t:id="title" validate="required" value="mapping.title"></t:textfield>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="description" class="col-md-2 control-label">Description</label>
+						<div class="col-md-10">
+							<t:textarea class="form-control" t:id="description" validate="required" value="mapping.description"></t:textarea>
+						</div>
+					</div>
+					<button type="submit" class="btn btn-default">Update information</button>
+				</t:form>
+			</t:zone>
+		</div>
+
+		<div class="panel panel-info">
+			<div class="panel-heading">Edit configuration</div>
+			<t:zone t:id="configurationZone" class="panel-body">
+				<t:form role="form" t:id="editconfiguration" class="form-horizontal" t:context="mapping.id" zone="configurationZone">
+					<center>
+					    <t:label for="inputFormat"/>:
+		   	 				<t:select t:id="inputFormat" model="availableInputs" value="mapping.inputFormat" zone="configurationZone"/>
+		   	 				<t:trigger event="changeInputFormat"/>
+		   	 				<input style="display:none" id="switchToCSV" type="button" onclick="showCSV();"/>
+		   	 				<input style="display:none" id="switchToRDB" type="button" onclick="showRDB();"/>
+		   	 				<br />
+						<div id="hiddenDivCSV">
+							<t:grid source="files" include="Name" row="file" add="delete" value="mapping.CSVFiles">
+								<p:deletecell>
+									<t:actionlink t:id="delete" t:context="file.name" zone="configurationZone"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></t:actionlink>
+								</p:deletecell>
+							</t:grid>
+								<br />
+							<div class="control">
+								<t:textfield class="form-control" style="width: 500px;" t:id="URL" placeholder="https://example.com/example.csv"
+								pattern="https://.*" zone="configurationZone"></t:textfield>
+							</div>
+								<br />
+								<div class="control">
+									<j:ajaxUpload t:id="uploadCSV"
+										t:multiple="true"
+										t:allowedExtensions="[csv]">
+										<noscript>
+											<p>JavaScript must be activated!</p>
+										</noscript>
+									</j:ajaxUpload>
+								</div>
+								<t:submit t:id="csv" class="btn btn-default" value="GO!">
+								</t:submit>
+						<br />
+						</div>
+					</center>
+		           <div id="hiddenDivRDB">
+						<div class="form-group">
+							<label for="connectionURL" class="col-md-2 control-label">Connection URL</label>
+							<div class="col-md-10">
+								<t:textfield class="form-control" t:id="connectionURL" value="mapping.connectionURL"></t:textfield>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="user" class="col-md-2 control-label">User</label>
+							<div class="col-md-10">
+								<t:textfield class="form-control" t:id="user" value="mapping.user"></t:textfield>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="password" class="col-md-2 control-label">Password</label>
+							<div class="col-md-10">
+								<t:textfield class="form-control" t:id="password" value="mapping.password"></t:textfield>
+							</div>
+						</div>
+					</div>						
+							<div class="form-group">
+							<label for="outputFile" class="col-md-2 control-label">Output file</label>
+							<div class="col-md-10">
+								<t:textfield class="form-control" t:id="outputFile" value="mapping.outputFile"></t:textfield>
+							</div>
+							</div>
+							<div class="form-group">
+								<label for="format" class="col-md-2 control-label">Format</label>
+								<div class="col-md-10">
+									<t:textfield class="form-control" t:id="format" value="mapping.format"></t:textfield>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="baseIRI" class="col-md-2 control-label">Base IRI</label>
+								<div class="col-md-10">
+									<t:textfield class="form-control" t:id="baseIRI" value="mapping.baseIRI"></t:textfield>
+								</div>
+							</div>
+							<!--  div class="form-group">
+								<label for="filePerGraph" class="col-md-2 control-label">File per graph</label>
+								<div class="col-md-10">
+									<t:checkbox class="form-control" t:id="filePerGraph" value="mapping.filePerGraph"></t:checkbox>
+								</div>
+							</div-->
+							<button type="submit" class="btn btn-default">Edit configuration</button>
+					</t:form>
+				</t:zone>
+	   		</div>
+		</div>
+
+		<div role="tabpanel" class="tab-pane" id="tab3">
+	    	<div class="row">
+			  	<br />
+				<div class="col-md-12">
+					<div class="panel panel-info">
+						<textarea id="code" class="form-control" rows="20" readonly="readonly"></textarea>
+					</div>
+				</div>
+			</div>
+	    </div>
+
+	    <div role="tabpanel" class="tab-pane" id="tab4">
+	    	<div class="row">
+			  	<br />
+				<div class="col-md-12">
+					<div class="panel panel-info">
+						<textarea id="smlcode" class="form-control" rows="20" readonly="readonly"></textarea>
+					</div>
+				</div>
+			</div>
+	    </div>
+	</div>
+
+	<script src="${context:js/blockly_compressed.js}"></script>
+	<script src="${context:js/blocks_compressed.js}"></script>
+	<script src="${context:js/en.js}"></script>
+	<script src="${context:js/juma.js}"></script>
+	<script src="${context:js/juma_r2rml_generator.js}"></script>
+	<script src="${context:js/juma_sml_generator.js}"></script>
+
+	<xml id="toolbox" style="display: none">
+
+	  <category name="Mapping" colour="#005580">
+			<block type="mapping">
+				<statement name="mapping">
+					<block type="tablesqlquery"></block>
+				</statement>
+			</block>
+		</category>
+	  	<category name="Vocabularies" colour="62">
+			<block type="prefix"></block>
+			<block type="predefinedprefix"></block>
+		</category>
+		<category name="Subject" colour="#5fb3ce">
+			<block type="subjectdef">
+				<value name="source">
+					<block type="subject">
+						<field name="TERMMAP">TEMPLATE</field>
+					</block>
+				</value>
+				<statement name="properties">
+					<block type="predicate_object">
+						<value name="predicate">
+							<block type="predicate">
+								<field name="TERMMAP">CONSTANT</field>
+							</block>
+						</value>
+						<value name="object">
+							<block type="object">
+								<field name="TERMMAP">COLUMN</field>
+								<field name="TERMTYPE">termtypeliteral</field>
+							</block>
+						</value>
+					</block>
+				</statement>
+			</block>
+			<block type="bnode"></block>
+			<block type="classes"></block>
+		</category>
+		<category name="Predicate/Object" colour="#5FBEE1">
+			<block type="predicate_object">
+				<value name="predicate">
+					<block type="predicate">
+						<field name="TERMMAP">CONSTANT</field>
+					</block>
+				</value>
+				<value name="object">
+					<block type="object">
+						<field name="TERMMAP">COLUMN</field>
+						<field name="TERMTYPE">termtypeliteral</field>
+					</block>
+				</value>
+			</block>
+			<block type="object">
+				<field name="TERMMAP">COLUMN</field>
+				<field name="TERMTYPE">termtypeliteral</field>
+			</block>
+		</category>
+		<category name="Linking" colour="#009999">
+			<block type="predicate_object">
+				<value name="predicate">
+					<block type="predicate">
+						<field name="TERMMAP">CONSTANT</field>
+					</block>
+				</value>
+				<value name="object">
+					<block type="linking_mappings"></block>
+				</value>
+			</block>
+			<block type="linking_mappings"></block>
+		</category>
+		<category name="Functions" colour="#DEB887">
+			<block type="load"></block>
+			<block type="callfunctionwithreturn"></block>
+			<block type="concat"></block>
+			<block type="replace"></block>
+		    <block type="substring"></block>
+		    <block type="sum"></block>
+		    <block type="avg"></block>
+		    <block type="predicate_object">
+				<value name="predicate">
+					<block type="predicate">
+						<field name="TERMMAP">CONSTANT</field>
+					</block>
+				</value>
+				<value name="object">
+					<block type="concat"></block>
+				</value>
+			</block>
+		</category>
+		<category name="Graph" colour="320">
+			<block type="graph"></block>
+		</category>
+	</xml>
+
+	<div id="startBlocks" style="display:none">
+		<t:if test="mapping.XML">
+			<t:outputRaw value="mapping.XML"/>
+			<p:else>
+				<xml xmlns="http://www.w3.org/1999/xhtml">
+					  <block deletable="false" type="mapping">
+					    <statement name="mapping">
+					      <block type="tablesqlquery">
+					        <mutation sql="insert value"></mutation>
+					        <field name="TABLESQLQUERY">table</field>
+					      </block>
+					    </statement>
+					    <statement name="vocabs">
+					      <block type="predefinedprefix" id="}mBx8jflh.@(Eoi]gVg+"><field name="PREFIX">foaf: &lt;http://xmlns.com/foaf/0.1/&gt;</field></block>
+					    </statement>
+					    <statement name="subjects">
+							<block type="subjectdef">
+								<field name="ID">1</field>
+								<value name="source">
+									<block type="subject">
+										<field name="TERMMAP">TEMPLATE</field>
+									</block>
+								</value>
+								<statement name="properties">
+									<block type="predicate_object">
+										<value name="predicate">
+											<block type="predicate">
+												<field name="TERMMAP">CONSTANT</field>
+											</block>
+										</value>
+										<value name="object">
+											<block type="object">
+												<field name="TERMMAP">COLUMN</field>
+												<field name="TERMTYPE">termtypeliteral</field>
+											</block>
+										</value>
+									</block>
+								</statement>
+							</block>
+					    </statement>
+					  </block>
+					</xml>
+			</p:else>
+		</t:if>
+	</div>
+	<script>
+	
+		function showCSV() {
+			    hiddenDivCSV.style.visibility='visible';
+				hiddenDivCSV.style.display='block';
+				hiddenDivRDB.style.visibility="hidden";
+				hiddenDivRDB.style.display="none";
+		}
+		
+		function showRDB() {
+				hiddenDivCSV.style.visibility='hidden';
+				hiddenDivCSV.style.display='none';
+				hiddenDivRDB.style.visibility="visible";
+				hiddenDivRDB.style.display="block";
+		}	
+
+	  var workspace = Blockly.inject('blocklyDiv',
+	  {toolbox: document.getElementById('toolbox'),
+	  	zoom:
+         {controls: true,
+          //wheel: true,
+          startScale: 0.7,
+          maxScale: 3,
+          minScale: 0.3,
+          scaleSpeed: 1.1},
+     		trashcan: true});
+
+	  Blockly.Xml.domToWorkspace(document.getElementById('startBlocks').getElementsByTagName("xml")[0], Blockly.mainWorkspace);
+
+	  function generateCode(event) {
+	  	var code = R2RML.workspaceToCode(workspace);
+	  	document.getElementById('code').value = code;
+
+	  	var smlcode = SML.workspaceToCode(workspace);
+	  	document.getElementById('smlcode').value = smlcode;
+
+	  	document.getElementById('r2rmlmappinghidden').value = code;
+	  };
+
+	  function updateHiddenField() {
+	  	var xml = Blockly.Xml.workspaceToDom(workspace);
+	  	var xml_text = Blockly.Xml.domToText(xml);
+	  	document.getElementById('hiddenfield').value = xml_text;
+	  };
+
+	  workspace.addChangeListener(generateCode);
+	  workspace.addChangeListener(updateHiddenField);
+
+		$('.nav-tabs a').on('click', function(event){
+			var x = $(event.target).text();         // active tab
+			if(x != 'Mapping') {
+				$('.blocklyToolboxDiv').hide();
+			} else {
+				$('.blocklyToolboxDiv').show();
+			}
+		});
+
+	</script>
+
+</html>

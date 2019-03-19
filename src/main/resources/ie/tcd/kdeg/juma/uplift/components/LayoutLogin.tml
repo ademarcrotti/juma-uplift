@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd"
+      xmlns:p="tapestry:parameter"
+      xmlns:j="tapestry-library:jquery">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+        <title>Juma Editor</title>
+        
+        <link href="${context:css/bootstrap.min.css}" rel="stylesheet" />
+        <link href="${context:css/bootstrap-theme.min.css}" rel="stylesheet" />
+    </head>
+    <body>	    
+		<div class="container">
+	        <!-- start page -->
+				<t:body/>
+	        <!-- end page -->
+	    </div>
+                
+        <!-- start footer -->
+        <!-- end footer -->
+        
+        <script src="${context:js/jquery-2.1.4.min.js}"></script>
+		<script src="${context:js/bootstrap.min.js}"></script>
+    </body>
+</html>
