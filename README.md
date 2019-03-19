@@ -2,7 +2,7 @@
 
 Juma, jigsaw puzzles for representing mapping, is a method that applies the block metaphor to mapping languages. 
 
-This aplication allows users to create mappings to transform non-RDF data to RDF that are serialized in [R2RML](https://www.w3.org/TR/r2rml/) and [SML](http://sml.aksw.org/).
+This aplication allows users to create mappings that transform non-RDF data to RDF that are serialized in [R2RML](https://www.w3.org/TR/r2rml/) and [SML](http://sml.aksw.org/).
 
 Find more information about this implementation of the method and the Juma Uplift application in [1] and in https://www.scss.tcd.ie/~crottija/juma/ .
 
