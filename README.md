@@ -4,7 +4,7 @@ Juma, jigsaw puzzles for representing mapping, is a method that applies the bloc
 
 This aplication allows users to create mappings that transform non-RDF data to RDF that are serialized in [R2RML](https://www.w3.org/TR/r2rml/) and [SML](http://sml.aksw.org/).
 
-Find more information about this implementation of the method and the Juma Uplift application in [1] and in https://www.scss.tcd.ie/~crottija/juma/ .
+Find more information about this implementation of the method and the Juma Uplift application in [1] and in http://openscience.adaptcentre.ie/juma/ .
 
 ## Using the code
 This code was developed using Java 8, maven and a MySQL database.
