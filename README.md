@@ -13,7 +13,7 @@ To execute the application go into project folder using terminal, and run the co
 
 Database connections can be modified in src/main/resources/hibernate.cfg.xml
 
-In order to run mappings you need to install the following [R2RML engine] (https://opengogs.adaptcentre.ie/crottija/r2rml) into your maven repository.
+In order to run mappings you need to install the following [R2RML engine](https://opengogs.adaptcentre.ie/crottija/r2rml) into your maven repository.
 
 ## License
 Code written by Ademar Crotti Junior.
