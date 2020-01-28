@@ -177,7 +177,15 @@
 					</requestLog>
 				</configuration>
 			</plugin>
-		</plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>7</source>
+                    <target>7</target>
+                </configuration>
+            </plugin>
+        </plugins>
 	</build>
 
 	<repositories>
@@ -198,6 +206,7 @@
 		<servlet-api-release-version>2.5</servlet-api-release-version>
 		<testng-release-version>5.14.10</testng-release-version>
 		<easymock-release-version>3.0</easymock-release-version>
-		<mysql-connector-version>5.1.39</mysql-connector-version>
+		<!-- <mysql-connector-version>5.1.39</mysql-connector-version> -->
+		<mysql-connector-version>8.0.19</mysql-connector-version>
 	</properties>
 </project>
