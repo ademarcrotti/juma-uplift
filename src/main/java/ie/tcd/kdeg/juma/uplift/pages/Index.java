@@ -138,10 +138,6 @@ public class Index extends BasePage {
 						.error("There was an error loading the R2RML mapping. Please make sure the mapping is valid.");
 			}
 		}
-		System.out.println(("info of file -----"));
-		System.out.println(newMapping.getId());
-		System.out.println(files.get(0).getFilePath());
-		System.out.println(("info of file -----"));
 		alertManager.success("Mapping created successfully!");
 		files.clear();
 		file = null;
