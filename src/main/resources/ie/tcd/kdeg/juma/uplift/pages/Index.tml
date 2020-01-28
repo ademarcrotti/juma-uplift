@@ -22,7 +22,8 @@
     		<th>Title</th>
     		<th>Creator</th>
     		<th>Created on</th>
-    		<th style="text-align:center">Actions</th>
+			<th style="text-align:center">Duplicate</th>
+    		<th style="text-align:center">Delete</th>
     	</tr>
     	<t:loop source="mappings" value="mapping">
     		<tr>
@@ -30,7 +31,8 @@
 	    		<td><t:pagelink page="EditMapping" context="mapping.id" >${mapping.title}</t:pagelink></td>
 	    		<td>${mapping.creator}</td>
 	    		<td>${mapping.created}</td>
-	    		<td style="text-align:center"><t:actionlink t:id="delete" t:context="mapping"  t:mixins="jquery/Confirm"><span class="glyphicon glyphicon-remove" aria-hidden="true"  ></span></t:actionlink></td>
+				<td style="text-align:center"><t:actionlink t:id="duplicate" t:context="mapping" t:mixins="jquery/Confirm"><span class="glyphicon glyphicon-plus" aria-hidden="true"  ></span></t:actionlink></td>
+	    		<td style="text-align:center"><t:actionlink t:id="delete" t:context="mapping"  t:mixins="jquery/Confirm"><span class="glyphicon glyphicon-trash" aria-hidden="true"  ></span></t:actionlink></td>
 	    	</tr>
     	</t:loop>
     </table>

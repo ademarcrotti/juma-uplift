@@ -1,5 +1,6 @@
 package ie.tcd.kdeg.juma.uplift.entities;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import javax.persistence.Transient;
 import org.apache.tapestry5.annotations.Persist;
 import org.apache.tapestry5.beaneditor.Validate;
 import org.hibernate.annotations.Type;
+import org.hibernate.util.SerializationHelper;
 
 @Entity
 public class Mapping extends BaseEntity {
@@ -165,5 +167,8 @@ public class Mapping extends BaseEntity {
 	public void setCSVFiles(List<String> CSVFiles) {
 		this.CSVFiles = CSVFiles;
 	}
+
+	public boolean getFilePerGraph(){return filePerGraph;}
+
 
 }

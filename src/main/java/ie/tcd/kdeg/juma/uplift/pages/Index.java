@@ -1,16 +1,17 @@
 package ie.tcd.kdeg.juma.uplift.pages;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
+import java.io.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.tapestry5.alerts.AlertManager;
 import org.apache.tapestry5.annotations.OnEvent;
@@ -21,6 +22,7 @@ import org.apache.tapestry5.hibernate.annotations.CommitAfter;
 import org.apache.tapestry5.ioc.annotations.Inject;
 import org.apache.tapestry5.upload.services.UploadedFile;
 import org.got5.tapestry5.jquery.JQueryEventConstants;
+import org.hibernate.ReplicationMode;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 
@@ -29,6 +31,10 @@ import ie.tcd.kdeg.juma.uplift.entities.Mapping;
 import ie.tcd.kdeg.juma.uplift.generatemapping.FileManager;
 import ie.tcd.kdeg.juma.uplift.generatemapping.GenerateMapping;
 import ie.tcd.kdeg.juma.uplift.loading.TransformingR2RMLtoJuma;
+import org.hibernate.util.SerializationHelper;
+import sun.awt.geom.AreaOp;
+
+import javax.persistence.EntityManager;
 
 public class Index extends BasePage {
 
@@ -70,7 +76,7 @@ public class Index extends BasePage {
 	@Persist
 	private List<InputFormat> availableInputs;
 
-	@CommitAfter
+	@CommitAfter//Execute this part after upload file
 	public String onActivate() {
 		if (!securityService.isAuthenticated()) {
 			return "login";
@@ -82,7 +88,7 @@ public class Index extends BasePage {
 		return null;
 	}
 
-	@CommitAfter
+	@CommitAfter //Execute this part after clicking createMapping
 	public void onSuccess() throws Exception {
 		// newMapping.setInputFormat(inputFormat.toString());
 		newMapping.setCreator(getUsername());
@@ -95,7 +101,6 @@ public class Index extends BasePage {
 
 		// create directory for r2rml files of that mapping
 		new File(FileManager.R2RML_FOLDER_PATH(newMapping.getId())).mkdirs();
-
 		// if csv's have been uploaded
 		if (!files.isEmpty()) {
 			// save csvs
@@ -105,7 +110,7 @@ public class Index extends BasePage {
 		// r2rml file but no csv's
 		if (file != null) {
 			try {
-				// save the r2rml files to directory & gnerate mapping
+				// save the r2rml files to directory & generate mapping
 				FileManager.saveR2RMlFile(file, FileManager.R2RML_FOLDER_PATH(newMapping.getId()));
 				newMapping.setXML(TransformingR2RMLtoJuma.transform(file.getStream()));
 
@@ -133,6 +138,10 @@ public class Index extends BasePage {
 						.error("There was an error loading the R2RML mapping. Please make sure the mapping is valid.");
 			}
 		}
+		System.out.println(("info of file -----"));
+		System.out.println(newMapping.getId());
+		System.out.println(files.get(0).getFilePath());
+		System.out.println(("info of file -----"));
 		alertManager.success("Mapping created successfully!");
 		files.clear();
 		file = null;
@@ -148,7 +157,65 @@ public class Index extends BasePage {
 	@CommitAfter
 	public void onActionFromDelete(Mapping mapping) {
 		session.delete(mapping);
+		//Local file should also be deleted -- Bowen Zhang
+		FileManager.deleteAll(FileManager.CSV_FOLDER_PATH(mapping.getId()));
 		alertManager.success("Mapping deleted successfully!");
+	}
+
+
+	//add duplicate function
+	@CommitAfter
+	public void onActionFromDuplicate(Mapping mapping) {
+
+		Mapping mappingCopy = null;
+		try {
+			mappingCopy = null;
+			Class<?> classType = mapping.getClass();
+			Field fields[] = classType.getDeclaredFields();
+			mappingCopy = (Mapping) classType.getConstructor(new Class[]{}).newInstance(new Object[]{});
+			Field field = null;
+			String suffixMethodName;
+			Method getMethod, setMethod;
+			Object value = null;
+
+			for (int i = 0; i < fields.length; i++) {
+				field = fields[i];
+				suffixMethodName = field.getName().substring(0, 1).toUpperCase() + (field.getName().length() > 1 ? field.getName().substring(1) : "");
+
+				getMethod = classType.getMethod("get" + suffixMethodName, new Class[]{});
+				setMethod = classType.getMethod("set" + suffixMethodName, new Class[]{field.getType()});
+
+				value = getMethod.invoke(mapping, new Object[]{});
+				if (null == value) {
+					if (field.getType().getName().equalsIgnoreCase("java.lang.String")) {
+						setMethod.invoke(mappingCopy, new Object[]{""});
+					}
+				} else {
+					setMethod.invoke(mappingCopy, new Object[]{value});
+				}
+
+			}
+			}catch (NoSuchMethodException e) {
+				e.printStackTrace();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}finally {
+				mappingCopy.setCreator(mapping.getCreator());
+				session.persist(mappingCopy);
+				session.flush();
+
+				String src = FileManager.CSV_FOLDER_PATH(mapping.getId());
+				String dst = FileManager.CSV_FOLDER_PATH(mappingCopy.getId());
+
+				// copy files from created mapping
+				try{
+					FileManager.copyFiles(src, dst);
+				}catch (IOException e){
+					e.printStackTrace();
+				}
+				alertManager.success("Duplicated mapping successfully!");
+			}
+
 	}
 
 	// Upload of multiple files

@@ -208,7 +208,7 @@
 						<div id="hiddenDivCSV">
 							<t:grid source="files" include="Name" row="file" add="delete" value="mapping.CSVFiles">
 								<p:deletecell>
-									<t:actionlink t:id="delete" t:context="file.name" zone="configurationZone"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></t:actionlink>
+									<t:actionlink t:id="delete" t:context="file.name" zone="configurationZone"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></t:actionlink>
 								</p:deletecell>
 							</t:grid>
 								<br />
