@@ -115,7 +115,7 @@ public class FileManager {
 	}
 
 	//delete all data when clicking delete button at Index page
-	public static void deleteAll(String src){
+	public static void deleteAll(String src) throws IOException{
 		File file = new File(src);
 
 		try{
