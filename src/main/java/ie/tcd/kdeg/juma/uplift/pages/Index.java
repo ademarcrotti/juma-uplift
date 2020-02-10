@@ -154,7 +154,12 @@ public class Index extends BasePage {
 	public void onActionFromDelete(Mapping mapping) {
 		session.delete(mapping);
 		//Local file should also be deleted -- Bowen Zhang
-		FileManager.deleteAll(FileManager.CSV_FOLDER_PATH(mapping.getId()));
+		try{
+			FileManager.deleteAll(FileManager.CSV_FOLDER_PATH(mapping.getId()));
+		}catch(IOException e){
+			e.printStackTrace();
+		}
+
 		alertManager.success("Mapping deleted successfully!");
 	}
 
