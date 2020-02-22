@@ -8,80 +8,104 @@
 
     <head>
     	<link href="css/index.css" rel="stylesheet" />
-		<style>
-		.qq-upload-button-hover, a:hover.qq-upload-button {cursor:pointer; color: #fff; background: 10px 10px #809FFF; }
-		</style>
     </head>
+	<style>
+		.Mapping{width:1500px;margin: 30px auto;border: 1px solid #ddd;-webkit-border-radius: 6px;-mox-border-radius: 6px;overflow: hidden;background-color:#F7F9F9;}
+		.newMapping{margin: 20px 40px;width:450px;padding: 14px;border: 1px solid #ddd;border-radius: 6px;-webkit-border-radius: 6px;-mox-border-radius: 6px;background-color: #F0F3F4 ;float:left;}
+		.mappingList{
+			margin: 20px 20px;
+			width:900px;
+			padding-left: 20px;
+			padding-right:20px;
+			border: 1px solid #ddd;
+			border-radius: 6px;
+			-webkit-border-radius: 6px;
+			-mox-border-radius: 6px;
+			background-color: #F0F3F4 ;
+			float:left;
+		}
+		input[type="submit"]{background-color:#58D68D; height:40px; color:white; margin-top:10px;-webkit-border-radius: 6px;-mox-border-radius: 6px;}
+		input[type="submit"]:hover{background-color:#17A589;}
+		.mappingLink{color:#3498DB ;font-size:18px;}
+		.head_Create{display:block;font-size:25px;margin-bottom:5px;padding-bottom:5px;font-weight:bold;color:#2E86C1;width:400px;text-align:center;border-bottom:1px solid #D5DBDB;}
+		.head_List{display:block;margin:10px auto;font-size:25px;font-weight:bold;color:#2E86C1;width:250px;text-align:center}
+		.title{display:block; margin:10px auto;font-size:35px;font-weight:bold;color:#2E86C1;text-align:center;width:300px;border-bottom:1px solid #D5DBDB;}
 
-
-	<h1>Mappings</h1>
-
-    <table class="table">
-    	<tr>
-    		<th>Nr.</th>
-    		<th>Title</th>
-    		<th>Creator</th>
-    		<th>Created on</th>
-			<th style="text-align:center">Duplicate</th>
-    		<th style="text-align:center">Delete</th>
-    	</tr>
-    	<t:loop source="mappings" value="mapping">
-    		<tr>
-	    		<td>${mapping.id}</td>
-	    		<td><t:pagelink page="EditMapping" context="mapping.id" >${mapping.title}</t:pagelink></td>
-	    		<td>${mapping.creator}</td>
-	    		<td>${mapping.created}</td>
-				<td style="text-align:center"><t:actionlink t:id="duplicate" t:context="mapping" t:mixins="jquery/Confirm"><span class="glyphicon glyphicon-plus" aria-hidden="true"  ></span></t:actionlink></td>
-	    		<td style="text-align:center"><t:actionlink t:id="delete" t:context="mapping"  t:mixins="jquery/Confirm"><span class="glyphicon glyphicon-trash" aria-hidden="true"  ></span></t:actionlink></td>
-	    	</tr>
-    	</t:loop>
-    </table>
-
-    <h1>Create Mapping</h1>
+	</style>
+	<div class="Mapping">
+		<span class="title"><span style="color:#E74C3C">J</span>u<span style="color:#E74C3C">m</span>a <span style="color:#E74C3C">Up</span>lift</span>
+	<div class="newMapping">
+		<span class="head_Create">Create Mapping</span>
 		<t:alerts />
+		<t:beaneditform  object="newMapping" include="title, description" add="R2RML, CSV, RunWith" submitlabel="Create Mapping">
+			<p:title>
+				<t:label for="title"/>
+				<t:textfield t:id="title" value="newMapping.title"/>
+			</p:title>
 
-	   	<t:beaneditform  object="newMapping" include="title, description" add="R2RML, CSV, RunWith" submitlabel="Create Mapping">
-	   		<p:title>
-		   		<t:label for="title"/>
-		        <t:textfield t:id="title" value="newMapping.title"/>
-	   		</p:title>
-
-	   		<p:description>
-		   		<t:label for="description"/>
-		        <t:textfield t:id="description" value="newMapping.description"/>
-	   		</p:description>
+			<p:description>
+				<t:label for="description"/>
+				<t:textfield t:id="description" value="newMapping.description"/>
+			</p:description>
 
 
-	   		<p:R2RML>
-	   			<label >R2RML</label>
-	   			<j:ajaxUpload t:id="uploadR2RML"
-	   				  id="ajax_button" 
-	                  t:allowedExtensions="[ttl]">
-    				<noscript>
-        				<p>JavaScript must be activated!</p>
-    				</noscript>
+			<p:R2RML>
+				<label >R2RML</label>
+				<j:ajaxUpload t:id="uploadR2RML"
+							  id="ajax_button"
+							  t:allowedExtensions="[ttl]">
+					<noscript>
+						<p>JavaScript must be activated!</p>
+					</noscript>
 				</j:ajaxUpload>
-	   		</p:R2RML>
+			</p:R2RML>
 
 
 
-	   		<p:CSV >
-	   			<label >CSV</label>
+			<p:CSV >
+				<label >CSV</label>
 
-	   			<j:ajaxUpload t:id="uploadCSV"
-	                  t:multiple="true"
-	                  id="ajax_button"
-	                  t:allowedExtensions="[csv]">
-    				<noscript>
-        				<p>JavaScript must be activated!</p>
-    				</noscript>
+				<j:ajaxUpload t:id="uploadCSV"
+							  t:multiple="true"
+							  id="ajax_button"
+							  t:allowedExtensions="[csv]">
+					<noscript>
+						<p>JavaScript must be activated!</p>
+					</noscript>
 				</j:ajaxUpload>
-	   		</p:CSV>
+			</p:CSV>
 
 			<p:RunWith>
 				<t:label for="inputFormat"/>:
-		   	 	<t:select t:id="inputFormat" model="availableInputs" value="newMapping.inputFormat"/>			
-		    </p:RunWith>
-	   	</t:beaneditform>
+				<t:select t:id="inputFormat" model="availableInputs" value="newMapping.inputFormat"/>
+			</p:RunWith>
+		</t:beaneditform>
+	</div>
+
+	<div class="mappingList">
+		<span class="head_List">Mapping Lists</span>
+		<table class="table">
+			<tr>
+				<th>Nr.</th>
+				<th>Mapping</th>
+				<th style="text-align:center">Duplicate</th>
+				<th style="text-align:center">Delete</th>
+				<th>Creator</th>
+				<th>Created on</th>
+			</tr>
+			<t:loop source="mappings" value="mapping">
+				<tr>
+					<td>${mapping.id}</td>
+					<td><t:pagelink page="EditMapping" context="mapping.id" ><span class="glyphicon glyphicon-folder-open" aria-hidden="true"  >&nbsp;</span></t:pagelink><span class="mappingLink">${mapping.title}</span></td>
+					<td style="text-align:center"><t:actionlink t:id="duplicate" t:context="mapping" t:mixins="jquery/Confirm"><span class="glyphicon glyphicon-plus" aria-hidden="true"  ></span></t:actionlink></td>
+					<td style="text-align:center"><t:actionlink t:id="delete" t:context="mapping"  t:mixins="jquery/Confirm"><span class="glyphicon glyphicon-trash" aria-hidden="true"  ></span></t:actionlink></td>
+					<td>${mapping.creator}</td>
+					<td>${mapping.created}</td>
+				</tr>
+			</t:loop>
+		</table>
+	</div>
+	</div>
+
 
 </html>
