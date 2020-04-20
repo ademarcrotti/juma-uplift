@@ -1,9 +1,6 @@
 package ie.tcd.kdeg.juma.uplift.generatemapping;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -12,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.tapestry5.upload.services.UploadedFile;
 
@@ -98,6 +96,32 @@ public class FileManager {
 			return new String(encoded, encoding);
 		} else {
 			return "";
+		}
+	}
+
+	//copy files from an existing mapping
+	public static void copyFiles(String src, String dest) throws IOException{
+		File srcF = new File(src);
+		File destF = new File(dest);
+		//MacOS would automatically generate .DS_Store file
+		File hiddenDS = new File(dest + ".DS_Store");
+
+		try{
+			FileUtils.copyDirectory(srcF, destF);
+			hiddenDS.delete();
+		}catch (IOException e){
+			e.printStackTrace();
+		}
+	}
+
+	//delete all data when clicking delete button at Index page
+	public static void deleteAll(String src) throws IOException{
+		File file = new File(src);
+
+		try{
+			FileUtils.deleteDirectory(file);
+		}catch (IOException e){
+			e.printStackTrace();
 		}
 	}
 

@@ -2,8 +2,8 @@
       t:sidebarTitle="Framework Version"
       xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd"
       xmlns:p="tapestry:parameter">
-     
-	
+
+
 	<div class="jumbotron">
 		<h1>Juma Editor</h1>
 		<t:security.LoginForm />
@@ -13,5 +13,5 @@
 		$("#tynamoLogin").attr('class', 'form-control');
 		$("#tynamoPassword").attr('class', 'form-control');
 	</script>
-	
+
 </html>

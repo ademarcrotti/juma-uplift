@@ -7,6 +7,4 @@ import org.apache.tapestry5.annotations.Import;
  */
 @Import(stylesheet = "context:css/layout.css")
 public class LayoutLogin {
-	
-
 }
